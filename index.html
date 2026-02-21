@@ -1,0 +1,616 @@
+<!DOCTYPE html>
+<html lang="ko">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Airvent DePIN App v3</title>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+    <style>
+        :root {
+            --bg-dark: #070B14;
+            --bg-card: #151C2C;
+            --primary: #3B82F6;
+            --primary-glow: rgba(59, 130, 246, 0.4);
+            --accent-green: #10B981;
+            --accent-purple: #8B5CF6;
+            --accent-gold: #F59E0B;
+            --text-main: #F8FAFC;
+            --text-muted: #94A3B8;
+            --border: #242F41;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Inter', sans-serif;
+            -webkit-tap-highlight-color: transparent;
+        }
+
+        body {
+            background-color: var(--bg-dark);
+            color: var(--text-main);
+            height: 100vh;
+            display: flex;
+            flex-direction: column;
+            overflow: hidden;
+        }
+
+        /* 공통 헤더 */
+        .header {
+            padding: 20px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            border-bottom: 1px solid var(--border);
+            background: rgba(7, 11, 20, 0.8);
+            backdrop-filter: blur(10px);
+            z-index: 100;
+        }
+
+        .header .brand {
+            font-size: 1.2rem;
+            font-weight: 800;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .header .brand i {
+            color: var(--primary);
+        }
+
+        .add-node-btn {
+            background: var(--primary);
+            color: white;
+            width: 32px;
+            height: 32px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.2rem;
+            cursor: pointer;
+            border: none;
+            box-shadow: 0 0 10px var(--primary-glow);
+        }
+
+        /* 콘텐츠 영역 */
+        .content {
+            flex: 1;
+            overflow-y: auto;
+            padding: 20px;
+            padding-bottom: 100px;
+            position: relative;
+        }
+
+        .tab-content {
+            display: none;
+            animation: fadeIn 0.3s ease;
+        }
+
+        .tab-content.active {
+            display: block;
+        }
+
+        /* 카드 스타일 */
+        .card {
+            background: var(--bg-card);
+            border: 1px solid var(--border);
+            border-radius: 20px;
+            padding: 20px;
+            margin-bottom: 15px;
+        }
+
+        .card-label {
+            font-size: 0.8rem;
+            color: var(--text-muted);
+            margin-bottom: 10px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        /* [HOME] My Node Dashboard */
+        .score-display {
+            text-align: center;
+            padding: 10px 0;
+        }
+
+        .score-circle {
+            width: 120px;
+            height: 120px;
+            border-radius: 50%;
+            border: 6px solid var(--accent-green);
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            margin: 0 auto 10px auto;
+            box-shadow: 0 0 20px rgba(16, 185, 129, 0.2);
+        }
+
+        .score-num {
+            font-size: 2.8rem;
+            font-weight: 800;
+        }
+
+        .score-txt {
+            font-size: 1rem;
+            color: var(--accent-green);
+            font-weight: 600;
+        }
+
+        .sensor-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 10px;
+        }
+
+        .sensor-item {
+            background: rgba(255, 255, 255, 0.03);
+            padding: 12px;
+            border-radius: 12px;
+            border: 1px solid var(--border);
+        }
+
+        .sensor-val {
+            font-size: 1.1rem;
+            font-weight: 700;
+            margin-top: 5px;
+        }
+
+        .unit {
+            font-size: 0.7rem;
+            color: var(--text-muted);
+            font-weight: normal;
+        }
+
+        .reward-box {
+            background: linear-gradient(135deg, rgba(59, 130, 246, 0.1), rgba(16, 185, 129, 0.1));
+            border: 1px solid rgba(59, 130, 246, 0.2);
+            padding: 15px;
+            border-radius: 12px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-top: 10px;
+        }
+
+        /* [NETWORK] Map */
+        .map-container {
+            background-color: #0B1120;
+            border: 1px solid var(--border);
+            border-radius: 16px;
+            height: 250px;
+            position: relative;
+            overflow: hidden;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .node-dot {
+            position: absolute;
+            width: 6px;
+            height: 6px;
+            background: var(--primary);
+            border-radius: 50%;
+            box-shadow: 0 0 10px var(--primary);
+            animation: pulse 2s infinite;
+        }
+
+        .node-dot.active {
+            background: var(--accent-green);
+            box-shadow: 0 0 10px var(--accent-green);
+        }
+
+        /* [AI AUDIT] Log */
+        .ai-status-box {
+            background: rgba(139, 92, 246, 0.05);
+            border: 1px solid var(--accent-purple);
+            border-radius: 15px;
+            padding: 15px;
+            margin-bottom: 15px;
+        }
+
+        .ai-log {
+            background: #000;
+            padding: 15px;
+            border-radius: 10px;
+            font-family: 'Courier New', monospace;
+            font-size: 0.75rem;
+            height: 250px;
+            overflow-y: auto;
+            color: #10B981;
+            line-height: 1.5;
+        }
+
+        /* [REGISTRATION] Modal */
+        #registration-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: var(--bg-dark);
+            z-index: 1000;
+            padding: 30px 20px;
+            display: none;
+            flex-direction: column;
+            animation: slideUp 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+
+        .reg-input {
+            background: var(--bg-card);
+            border: 1px solid var(--border);
+            padding: 15px;
+            border-radius: 12px;
+            color: white;
+            width: 100%;
+            margin-top: 10px;
+            font-size: 1rem;
+        }
+
+        .reg-btn {
+            background: var(--primary);
+            color: white;
+            padding: 18px;
+            border-radius: 15px;
+            border: none;
+            font-weight: bold;
+            margin-top: 20px;
+            width: 100%;
+            font-size: 1rem;
+            cursor: pointer;
+        }
+
+        .qr-mock {
+            width: 100%;
+            height: 200px;
+            border: 2px dashed var(--text-muted);
+            border-radius: 15px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            color: var(--text-muted);
+            margin: 20px 0;
+            cursor: pointer;
+        }
+
+        /* 하단 탭바 */
+        .bottom-nav {
+            position: fixed;
+            bottom: 0;
+            width: 100%;
+            background: var(--bg-card);
+            border-top: 1px solid var(--border);
+            display: flex;
+            justify-content: space-around;
+            padding: 10px 0 25px;
+            box-shadow: 0 -10px 30px rgba(0, 0, 0, 0.5);
+        }
+
+        .nav-btn {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 5px;
+            color: var(--text-muted);
+            font-size: 0.65rem;
+            transition: 0.2s;
+            flex: 1;
+            cursor: pointer;
+        }
+
+        .nav-btn.active {
+            color: var(--primary);
+        }
+
+        .nav-btn i {
+            font-size: 1.3rem;
+        }
+
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+                transform: translateY(10px);
+            }
+
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        @keyframes slideUp {
+            from {
+                transform: translateY(100%);
+            }
+
+            to {
+                transform: translateY(0);
+            }
+        }
+
+        @keyframes pulse {
+            0% {
+                transform: scale(1);
+                opacity: 1;
+            }
+
+            50% {
+                transform: scale(1.8);
+                opacity: 0.4;
+            }
+
+            100% {
+                transform: scale(1);
+                opacity: 1;
+            }
+        }
+    </style>
+</head>
+
+<body>
+
+    <header class="header">
+        <div class="brand"><i class="fa-solid fa-wind"></i> AIRVENT</div>
+        <div style="display:flex; align-items:center; gap:12px;">
+            <div id="wallet-pill"
+                style="background: rgba(139, 92, 246, 0.1); border: 1px solid var(--accent-purple); color: var(--accent-purple); padding: 4px 10px; border-radius: 15px; font-size: 0.7rem; font-weight: 600;">
+                8xT...4pZ</div>
+            <button class="add-node-btn" onclick="openRegistration()">+</button>
+        </div>
+    </header>
+
+    <div class="content">
+        <!-- Home Tab -->
+        <div id="home" class="tab-content active">
+            <div id="node-active-view">
+                <div class="card">
+                    <div class="card-label"><span>Indoor Air Quality</span> <span id="node-status"
+                            style="color:var(--accent-green)">● Online</span></div>
+                    <div class="score-display">
+                        <div class="score-circle">
+                            <span class="score-num">92</span>
+                            <span class="score-txt">Excellent</span>
+                        </div>
+                    </div>
+                    <div class="sensor-grid">
+                        <div class="sensor-item">
+                            <div class="card-label">PM 2.5</div>
+                            <div class="sensor-val">12 <span class="unit">µg/m³</span></div>
+                        </div>
+                        <div class="sensor-item">
+                            <div class="card-label">CO2</div>
+                            <div class="sensor-val">485 <span class="unit">ppm</span></div>
+                        </div>
+                        <div class="sensor-item">
+                            <div class="card-label">TVOC</div>
+                            <div class="sensor-val">0.15 <span class="unit">mg/m³</span></div>
+                        </div>
+                        <div class="sensor-item">
+                            <div class="card-label">Temp/Humid</div>
+                            <div class="sensor-val">24<span class="unit">°C</span> 45<span class="unit">%</span></div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="card" style="background: linear-gradient(135deg, #1E293B 0%, #0F172A 100%);">
+                    <div class="card-label">Mining Rewards</div>
+                    <div class="mining-stats">
+                        <div class="reward-box">
+                            <div>
+                                <div style="font-size: 0.8rem; color: var(--text-muted);">Today (24h)</div>
+                                <div style="font-size: 1.8rem; font-weight: 800; color: var(--primary);">14.50 <span
+                                        style="font-size: 0.9rem;">$VENT</span></div>
+                            </div>
+                            <div style="text-align: right;">
+                                <div style="font-size: 0.75rem; color: var(--accent-green);"><i
+                                        class="fa-solid fa-bolt"></i> Boost x1.2</div>
+                                <div style="font-size: 0.7rem; color: var(--text-muted);">≈ $1.20</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Network Tab -->
+        <div id="map" class="tab-content">
+            <div class="card">
+                <div class="card-label">Global DePIN Network</div>
+                <div class="map-container" id="map-area">
+                    <div style="position:absolute; color:rgba(255,255,255,0.05); font-weight:900; font-size:2rem;">
+                        EXPLORER</div>
+                </div>
+                <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-top: 15px;">
+                    <div class="sensor-item" style="text-align: center;">
+                        <div class="card-label" style="justify-content: center;">Active Nodes</div>
+                        <div style="font-size: 1.2rem; font-weight: bold;">5,284</div>
+                    </div>
+                    <div class="sensor-item" style="text-align: center;">
+                        <div class="card-label" style="justify-content: center;">Data Txs</div>
+                        <div style="font-size: 1.2rem; font-weight: bold;">12.4M</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- AI Audit Tab -->
+        <div id="ai" class="tab-content">
+            <div class="ai-status-box">
+                <div class="card-label" style="color: var(--accent-purple); font-weight: bold;">
+                    <span><i class="fa-solid fa-robot"></i> Gemini AI Validator</span>
+                    <span id="ai-status-indicator">Monitoring...</span>
+                </div>
+                <p style="font-size: 0.8rem; color: var(--text-muted);">제미나이 AI가 이 노드의 데이터를 실시간으로 분석하여 무결성을 검증하고 있습니다.
+                </p>
+            </div>
+
+            <div class="card">
+                <div class="card-label">Live Oracle Log</div>
+                <div class="ai-log" id="ai-log-stream">
+                    > Initializing Gemini AI Oracle...<br>
+                    > Node #AV-8924 Authenticated.<br>
+                </div>
+            </div>
+
+            <div class="card" style="border-color: var(--accent-gold); background: rgba(245, 158, 11, 0.05);">
+                <div class="card-label" style="color: var(--accent-gold); font-weight: bold;">Security Summary</div>
+                <div style="font-size: 0.85rem; line-height: 1.4;">
+                    제미나이 AI 모델이 현재 데이터의 시간적 패턴과 주변 노드와의 상관관계를 분석한 결과, **정상(Confidence 99.8%)**으로 판정되었습니다.
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Registration Overlay -->
+    <div id="registration-overlay">
+        <div style="display:flex; justify-content: space-between; align-items: center; margin-bottom: 20px;">
+            <h2>Register Node</h2>
+            <i class="fa-solid fa-xmark" onclick="closeRegistration()"
+                style="font-size: 1.5rem; color: var(--text-muted); cursor: pointer;"></i>
+        </div>
+
+        <p style="color:var(--text-muted); font-size: 0.9rem;">에어벤트 기기 하단의 QR코드를 스캔하여 DePIN 네트워크에 등록하세요.</p>
+
+        <div class="qr-mock" onclick="simulateScan()">
+            <i class="fa-solid fa-qrcode" style="font-size: 3.5rem; margin-bottom: 10px; color: var(--primary);"></i>
+            <span>Tap to Scan QR Code</span>
+        </div>
+
+        <div style="margin-top: 10px;">
+            <label style="font-size: 0.8rem; color: var(--text-muted);">Device ID</label>
+            <input type="text" id="device-id-field" class="reg-input" placeholder="AV-XXXX-XXXX">
+        </div>
+
+        <button class="reg-btn" id="reg-action-btn" onclick="startIntegratedOnboarding()">Connect to Solana</button>
+
+        <div id="onboarding-log-box"
+            style="margin-top:20px; display:none; background: #000; padding:15px; border-radius:10px; border:1px solid var(--accent-purple);">
+            <div id="onboarding-stepper"
+                style="font-family: monospace; font-size: 0.75rem; color: var(--accent-purple); line-height: 1.6;">
+            </div>
+        </div>
+    </div>
+
+    <nav class="bottom-nav">
+        <div class="nav-btn active" onclick="showTab('home', this)">
+            <i class="fa-solid fa-house"></i>
+            <span>Home</span>
+        </div>
+        <div class="nav-btn" onclick="showTab('map', this)">
+            <i class="fa-solid fa-globe"></i>
+            <span>Network</span>
+        </div>
+        <div class="nav-btn" onclick="showTab('ai', this)">
+            <i class="fa-solid fa-shield-halved"></i>
+            <span>AI Audit</span>
+        </div>
+        <div class="nav-btn">
+            <i class="fa-solid fa-wallet"></i>
+            <span>Wallet</span>
+        </div>
+    </nav>
+
+    <script>
+        function showTab(tabId, el) {
+            document.querySelectorAll('.tab-content').forEach(t => t.classList.remove('active'));
+            document.querySelectorAll('.nav-btn').forEach(b => b.classList.remove('active'));
+            document.getElementById(tabId).classList.add('active');
+            el.classList.add('active');
+
+            if (tabId === 'map') genMapDots();
+            if (tabId === 'ai') startAiLiveLog();
+        }
+
+        function openRegistration() { document.getElementById('registration-overlay').style.display = 'flex'; }
+        function closeRegistration() { document.getElementById('registration-overlay').style.display = 'none'; }
+
+        function simulateScan() {
+            document.getElementById('device-id-field').value = "AV-9912-XTR7";
+            alert("QR Code Scanned!");
+        }
+
+        function startIntegratedOnboarding() {
+            const btn = document.getElementById('reg-action-btn');
+            const logBox = document.getElementById('onboarding-log-box');
+            const stepper = document.getElementById('onboarding-stepper');
+
+            btn.disabled = true;
+            btn.innerText = "Connecting...";
+            logBox.style.display = 'block';
+            stepper.innerHTML = "";
+
+            const steps = [
+                "> Handshaking with Node...",
+                "> Validating Firmware Signature...",
+                "> Gemini AI: P-Key Verification...",
+                "> Gemini AI: Status [SECURE]",
+                "> Minting Node SFT on Solana...",
+                "> Linking to Wallet: 8xT...4pZ",
+                "> Finalizing Onboarding..."
+            ];
+
+            let i = 0;
+            const scrollInterval = setInterval(() => {
+                if (i < steps.length) {
+                    stepper.innerHTML += steps[i] + "<br>";
+                    i++;
+                } else {
+                    clearInterval(scrollInterval);
+                    setTimeout(() => {
+                        alert("노드가 성공적으로 등록되었습니다!");
+                        closeRegistration();
+                    }, 1000);
+                }
+            }, 700);
+        }
+
+        function genMapDots() {
+            const map = document.getElementById('map-area');
+            map.querySelectorAll('.node-dot').forEach(d => d.remove());
+            for (let i = 0; i < 35; i++) {
+                const d = document.createElement('div');
+                d.className = 'node-dot' + (Math.random() > 0.7 ? ' active' : '');
+                d.style.top = Math.random() * 80 + 10 + '%';
+                d.style.left = Math.random() * 80 + 10 + '%';
+                d.style.animationDelay = Math.random() * 2 + 's';
+                map.appendChild(d);
+            }
+        }
+
+        function startAiLiveLog() {
+            const logStream = document.getElementById('ai-log-stream');
+            const indicator = document.getElementById('ai-status-indicator');
+            indicator.innerText = "Analyzing...";
+
+            const lines = [
+                "> Scanning PM2.5 temporal dynamics...",
+                "> Cross-referencing CO2 correlations...",
+                "> Pattern recognized: NATURAL_AIRFLOW",
+                "> <span style='color:white'>[OK]</span> Data Integrity Verified.",
+                "> Reporting to Solana Mainnet...",
+                "> Batch Tx: 5gYm...9qZ1"
+            ];
+
+            let i = 0;
+            const logInterval = setInterval(() => {
+                if (i < lines.length) {
+                    logStream.innerHTML += lines[i] + "<br>";
+                    logStream.scrollTop = logStream.scrollHeight;
+                    i++;
+                } else {
+                    clearInterval(logInterval);
+                    indicator.innerText = "Monitoring...";
+                }
+            }, 900);
+        }
+    </script>
+</body>
+
+</html>
