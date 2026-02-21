@@ -4,20 +4,27 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>Airvent DePIN App v3</title>
+    <title>AirVent — DePIN Air Quality Platform</title>
+    <meta name="description"
+        content="AirVent DePIN: Decentralized air quality monitoring, AI-validated data, and $VENT token rewards on Solana.">
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap"
+        rel="stylesheet">
     <style>
         :root {
-            --bg-dark: #070B14;
-            --bg-card: #151C2C;
+            --bg-dark: #060A13;
+            --bg-card: #111827;
+            --bg-card-alt: #1E293B;
             --primary: #3B82F6;
-            --primary-glow: rgba(59, 130, 246, 0.4);
+            --primary-glow: rgba(59, 130, 246, 0.35);
             --accent-green: #10B981;
             --accent-purple: #8B5CF6;
             --accent-gold: #F59E0B;
-            --text-main: #F8FAFC;
+            --accent-red: #EF4444;
+            --text-main: #F1F5F9;
             --text-muted: #94A3B8;
-            --border: #242F41;
+            --border: #1E293B;
+            --glass: rgba(17, 24, 39, 0.7);
         }
 
         * {
@@ -28,162 +35,283 @@
             -webkit-tap-highlight-color: transparent;
         }
 
-        body {
-            background-color: var(--bg-dark);
-            color: var(--text-main);
-            height: 100vh;
-            display: flex;
-            flex-direction: column;
-            overflow: hidden;
+        html {
+            scroll-behavior: smooth;
         }
 
-        /* 공통 헤더 */
-        .header {
-            padding: 20px;
+        body {
+            background: var(--bg-dark);
+            color: var(--text-main);
+            overflow-x: hidden;
+        }
+
+        /* ===== LANDING PAGE ===== */
+        #landing {
+            display: block;
+        }
+
+        #dashboard-app {
+            display: none;
+        }
+
+        /* NAV */
+        .landing-nav {
+            position: fixed;
+            top: 0;
+            width: 100%;
+            z-index: 500;
+            padding: 16px 24px;
             display: flex;
             justify-content: space-between;
             align-items: center;
+            background: rgba(6, 10, 19, 0.85);
+            backdrop-filter: blur(16px);
             border-bottom: 1px solid var(--border);
-            background: rgba(7, 11, 20, 0.8);
-            backdrop-filter: blur(10px);
-            z-index: 100;
         }
 
-        .header .brand {
+        .nav-brand {
             font-size: 1.2rem;
             font-weight: 800;
             display: flex;
             align-items: center;
             gap: 8px;
+            color: var(--text-main);
         }
 
-        .header .brand i {
+        .nav-brand i {
             color: var(--primary);
         }
 
-        .add-node-btn {
-            background: var(--primary);
-            color: white;
-            width: 32px;
-            height: 32px;
-            border-radius: 50%;
+        .nav-links {
             display: flex;
+            gap: 24px;
             align-items: center;
-            justify-content: center;
-            font-size: 1.2rem;
-            cursor: pointer;
-            border: none;
-            box-shadow: 0 0 10px var(--primary-glow);
         }
 
-        /* 콘텐츠 영역 */
-        .content {
-            flex: 1;
-            overflow-y: auto;
-            padding: 20px;
-            padding-bottom: 100px;
-            position: relative;
-        }
-
-        .tab-content {
-            display: none;
-            animation: fadeIn 0.3s ease;
-        }
-
-        .tab-content.active {
-            display: block;
-        }
-
-        /* 카드 스타일 */
-        .card {
-            background: var(--bg-card);
-            border: 1px solid var(--border);
-            border-radius: 20px;
-            padding: 20px;
-            margin-bottom: 15px;
-        }
-
-        .card-label {
-            font-size: 0.8rem;
+        .nav-links a {
             color: var(--text-muted);
-            margin-bottom: 10px;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
+            text-decoration: none;
+            font-size: 0.85rem;
+            font-weight: 500;
+            transition: .2s;
         }
 
-        /* [HOME] My Node Dashboard */
-        .score-display {
-            text-align: center;
-            padding: 10px 0;
+        .nav-links a:hover {
+            color: var(--text-main);
         }
 
-        .score-circle {
-            width: 120px;
-            height: 120px;
-            border-radius: 50%;
-            border: 6px solid var(--accent-green);
+        .btn {
+            padding: 10px 20px;
+            border-radius: 12px;
+            font-weight: 600;
+            font-size: 0.85rem;
+            border: none;
+            cursor: pointer;
+            transition: .3s;
+        }
+
+        .btn-primary {
+            background: var(--primary);
+            color: #fff;
+            box-shadow: 0 0 20px var(--primary-glow);
+        }
+
+        .btn-primary:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 30px var(--primary-glow);
+        }
+
+        .btn-outline {
+            background: transparent;
+            border: 1px solid var(--border);
+            color: var(--text-main);
+        }
+
+        .btn-outline:hover {
+            border-color: var(--primary);
+            color: var(--primary);
+        }
+
+        .btn-sm {
+            padding: 8px 16px;
+            font-size: 0.8rem;
+        }
+
+        /* HERO */
+        .hero {
+            min-height: 100vh;
             display: flex;
             flex-direction: column;
             justify-content: center;
             align-items: center;
-            margin: 0 auto 10px auto;
-            box-shadow: 0 0 20px rgba(16, 185, 129, 0.2);
+            text-align: center;
+            padding: 120px 24px 80px;
+            position: relative;
+            overflow: hidden;
         }
 
-        .score-num {
-            font-size: 2.8rem;
-            font-weight: 800;
+        .hero::before {
+            content: '';
+            position: absolute;
+            top: -50%;
+            left: -50%;
+            width: 200%;
+            height: 200%;
+            background: radial-gradient(circle at 50% 60%, rgba(59, 130, 246, 0.08) 0%, transparent 50%);
+            pointer-events: none;
         }
 
-        .score-txt {
-            font-size: 1rem;
-            color: var(--accent-green);
-            font-weight: 600;
-        }
-
-        .sensor-grid {
-            display: grid;
-            grid-template-columns: repeat(2, 1fr);
-            gap: 10px;
-        }
-
-        .sensor-item {
-            background: rgba(255, 255, 255, 0.03);
-            padding: 12px;
-            border-radius: 12px;
-            border: 1px solid var(--border);
-        }
-
-        .sensor-val {
-            font-size: 1.1rem;
-            font-weight: 700;
-            margin-top: 5px;
-        }
-
-        .unit {
-            font-size: 0.7rem;
-            color: var(--text-muted);
-            font-weight: normal;
-        }
-
-        .reward-box {
-            background: linear-gradient(135deg, rgba(59, 130, 246, 0.1), rgba(16, 185, 129, 0.1));
-            border: 1px solid rgba(59, 130, 246, 0.2);
-            padding: 15px;
-            border-radius: 12px;
-            display: flex;
-            justify-content: space-between;
+        .hero-badge {
+            display: inline-flex;
             align-items: center;
-            margin-top: 10px;
+            gap: 6px;
+            background: rgba(59, 130, 246, 0.1);
+            border: 1px solid rgba(59, 130, 246, 0.2);
+            color: var(--primary);
+            padding: 6px 14px;
+            border-radius: 20px;
+            font-size: 0.75rem;
+            font-weight: 600;
+            margin-bottom: 24px;
         }
 
-        /* [NETWORK] Map */
-        .map-container {
-            background-color: #0B1120;
+        .hero h1 {
+            font-size: clamp(2rem, 5vw, 3.5rem);
+            font-weight: 900;
+            line-height: 1.15;
+            max-width: 700px;
+            margin-bottom: 20px;
+        }
+
+        .hero h1 .grad {
+            background: linear-gradient(135deg, var(--primary), var(--accent-purple));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        .hero p {
+            color: var(--text-muted);
+            font-size: 1rem;
+            max-width: 550px;
+            line-height: 1.6;
+            margin-bottom: 32px;
+        }
+
+        .hero-btns {
+            display: flex;
+            gap: 12px;
+            flex-wrap: wrap;
+            justify-content: center;
+        }
+
+        .hero-stats {
+            display: flex;
+            gap: 40px;
+            margin-top: 60px;
+        }
+
+        .hero-stat {
+            text-align: center;
+        }
+
+        .hero-stat .num {
+            font-size: 1.8rem;
+            font-weight: 800;
+            color: var(--text-main);
+        }
+
+        .hero-stat .lbl {
+            font-size: 0.75rem;
+            color: var(--text-muted);
+            margin-top: 4px;
+        }
+
+        /* SECTIONS */
+        .section {
+            padding: 80px 24px;
+            max-width: 1100px;
+            margin: 0 auto;
+        }
+
+        .section-title {
+            font-size: 1.6rem;
+            font-weight: 800;
+            margin-bottom: 8px;
+            text-align: center;
+        }
+
+        .section-sub {
+            color: var(--text-muted);
+            text-align: center;
+            margin-bottom: 40px;
+            font-size: 0.9rem;
+        }
+
+        /* HOW IT WORKS */
+        .steps-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+            gap: 20px;
+        }
+
+        .step-card {
+            background: var(--bg-card);
             border: 1px solid var(--border);
+            border-radius: 20px;
+            padding: 28px 24px;
+            text-align: center;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .step-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 3px;
+            background: linear-gradient(90deg, var(--primary), var(--accent-purple));
+        }
+
+        .step-num {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            background: rgba(59, 130, 246, 0.1);
+            color: var(--primary);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: 800;
+            margin: 0 auto 16px;
+        }
+
+        .step-card h3 {
+            font-size: 1rem;
+            margin-bottom: 8px;
+        }
+
+        .step-card p {
+            font-size: 0.8rem;
+            color: var(--text-muted);
+            line-height: 1.5;
+        }
+
+        /* LIVE MAP SECTION */
+        .map-section-container {
+            background: var(--bg-card);
+            border: 1px solid var(--border);
+            border-radius: 24px;
+            padding: 24px;
+            margin-top: 20px;
+        }
+
+        .live-map {
+            width: 100%;
+            height: 300px;
+            background: #0A0F1A;
             border-radius: 16px;
-            height: 250px;
             position: relative;
             overflow: hidden;
             display: flex;
@@ -191,44 +319,511 @@
             align-items: center;
         }
 
-        .node-dot {
+        .map-dot {
             position: absolute;
             width: 6px;
             height: 6px;
             background: var(--primary);
             border-radius: 50%;
             box-shadow: 0 0 10px var(--primary);
-            animation: pulse 2s infinite;
+            animation: pulse 2.5s infinite;
         }
 
-        .node-dot.active {
+        .map-dot.green {
             background: var(--accent-green);
             box-shadow: 0 0 10px var(--accent-green);
         }
 
-        /* [AI AUDIT] Log */
-        .ai-status-box {
+        .map-dot.gold {
+            background: var(--accent-gold);
+            box-shadow: 0 0 10px var(--accent-gold);
+        }
+
+        .map-stats-row {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 12px;
+            margin-top: 16px;
+        }
+
+        .map-stat {
+            text-align: center;
+            padding: 12px;
+            background: rgba(255, 255, 255, 0.02);
+            border-radius: 12px;
+            border: 1px solid rgba(255, 255, 255, 0.04);
+        }
+
+        .map-stat .val {
+            font-size: 1.2rem;
+            font-weight: 700;
+        }
+
+        .map-stat .lbl {
+            font-size: 0.7rem;
+            color: var(--text-muted);
+            margin-top: 4px;
+        }
+
+        /* NEWS */
+        .news-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 16px;
+        }
+
+        .news-card {
+            background: var(--bg-card);
+            border: 1px solid var(--border);
+            border-radius: 16px;
+            padding: 20px;
+            transition: .3s;
+        }
+
+        .news-card:hover {
+            border-color: var(--primary);
+            transform: translateY(-3px);
+        }
+
+        .news-tag {
+            display: inline-block;
+            padding: 3px 10px;
+            border-radius: 8px;
+            font-size: 0.65rem;
+            font-weight: 600;
+            margin-bottom: 10px;
+        }
+
+        .tag-alert {
+            background: rgba(239, 68, 68, 0.1);
+            color: var(--accent-red);
+        }
+
+        .tag-insight {
+            background: rgba(59, 130, 246, 0.1);
+            color: var(--primary);
+        }
+
+        .tag-update {
+            background: rgba(16, 185, 129, 0.1);
+            color: var(--accent-green);
+        }
+
+        .news-card h3 {
+            font-size: 0.95rem;
+            margin-bottom: 8px;
+            line-height: 1.4;
+        }
+
+        .news-card p {
+            font-size: 0.8rem;
+            color: var(--text-muted);
+            line-height: 1.5;
+            margin-bottom: 12px;
+        }
+
+        .news-meta {
+            font-size: 0.7rem;
+            color: var(--text-muted);
+            display: flex;
+            justify-content: space-between;
+        }
+
+        /* PRICING */
+        .pricing-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+            gap: 20px;
+        }
+
+        .price-card {
+            background: var(--bg-card);
+            border: 1px solid var(--border);
+            border-radius: 20px;
+            padding: 32px 24px;
+            text-align: center;
+            position: relative;
+            transition: .3s;
+        }
+
+        .price-card.featured {
+            border-color: var(--primary);
+            box-shadow: 0 0 40px rgba(59, 130, 246, 0.1);
+        }
+
+        .price-card.featured::before {
+            content: 'POPULAR';
+            position: absolute;
+            top: -12px;
+            left: 50%;
+            transform: translateX(-50%);
+            background: var(--primary);
+            color: #fff;
+            font-size: 0.65rem;
+            font-weight: 700;
+            padding: 4px 14px;
+            border-radius: 10px;
+        }
+
+        .price-card .tier {
+            font-size: 0.8rem;
+            color: var(--text-muted);
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            margin-bottom: 12px;
+        }
+
+        .price-card .price {
+            font-size: 2.2rem;
+            font-weight: 800;
+            margin-bottom: 4px;
+        }
+
+        .price-card .price .mo {
+            font-size: 0.85rem;
+            color: var(--text-muted);
+            font-weight: 500;
+        }
+
+        .price-card .desc {
+            font-size: 0.8rem;
+            color: var(--text-muted);
+            margin-bottom: 20px;
+        }
+
+        .price-features {
+            text-align: left;
+            margin-bottom: 24px;
+        }
+
+        .price-features li {
+            list-style: none;
+            font-size: 0.82rem;
+            padding: 6px 0;
+            color: var(--text-muted);
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .price-features li i {
+            color: var(--accent-green);
+            font-size: 0.75rem;
+        }
+
+        /* FOOTER */
+        .footer {
+            border-top: 1px solid var(--border);
+            padding: 40px 24px;
+            text-align: center;
+            color: var(--text-muted);
+            font-size: 0.8rem;
+        }
+
+        .footer-links {
+            display: flex;
+            gap: 20px;
+            justify-content: center;
+            margin-bottom: 16px;
+            flex-wrap: wrap;
+        }
+
+        .footer-links a {
+            color: var(--text-muted);
+            text-decoration: none;
+            font-size: 0.8rem;
+        }
+
+        .footer-links a:hover {
+            color: var(--primary);
+        }
+
+        /* ===== DASHBOARD APP ===== */
+        .dash-header {
+            padding: 16px 20px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            border-bottom: 1px solid var(--border);
+            background: rgba(6, 10, 19, 0.85);
+            backdrop-filter: blur(16px);
+            position: sticky;
+            top: 0;
+            z-index: 100;
+        }
+
+        .dash-header .brand {
+            font-size: 1.1rem;
+            font-weight: 800;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .dash-header .brand i {
+            color: var(--primary);
+        }
+
+        .dash-header-right {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .wallet-chip {
+            background: rgba(139, 92, 246, 0.1);
+            border: 1px solid var(--accent-purple);
+            color: var(--accent-purple);
+            padding: 4px 10px;
+            border-radius: 12px;
+            font-size: 0.7rem;
+            font-weight: 600;
+        }
+
+        .add-btn {
+            background: var(--primary);
+            color: #fff;
+            width: 30px;
+            height: 30px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1rem;
+            cursor: pointer;
+            border: none;
+            box-shadow: 0 0 10px var(--primary-glow);
+        }
+
+        .dash-content {
+            padding: 20px;
+            padding-bottom: 100px;
+            overflow-y: auto;
+            height: calc(100vh - 60px);
+        }
+
+        .dash-tab {
+            display: none;
+            animation: fadeIn .3s ease;
+        }
+
+        .dash-tab.active {
+            display: block;
+        }
+
+        /* Dashboard Cards */
+        .d-card {
+            background: var(--bg-card);
+            border: 1px solid var(--border);
+            border-radius: 20px;
+            padding: 20px;
+            margin-bottom: 16px;
+        }
+
+        .d-card-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 14px;
+        }
+
+        .d-card-title {
+            font-size: 0.85rem;
+            font-weight: 600;
+            color: var(--text-muted);
+        }
+
+        .d-badge {
+            font-size: 0.7rem;
+            font-weight: 600;
+            padding: 3px 10px;
+            border-radius: 8px;
+        }
+
+        .badge-green {
+            background: rgba(16, 185, 129, 0.1);
+            color: var(--accent-green);
+        }
+
+        .badge-gold {
+            background: rgba(245, 158, 11, 0.1);
+            color: var(--accent-gold);
+        }
+
+        .badge-purple {
+            background: rgba(139, 92, 246, 0.1);
+            color: var(--accent-purple);
+        }
+
+        /* Score */
+        .score-ring {
+            width: 110px;
+            height: 110px;
+            border-radius: 50%;
+            border: 5px solid var(--accent-green);
+            margin: 0 auto 10px;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            box-shadow: 0 0 25px rgba(16, 185, 129, 0.15);
+        }
+
+        .score-ring .big {
+            font-size: 2.4rem;
+            font-weight: 800;
+        }
+
+        .score-ring .sm {
+            font-size: 0.85rem;
+            color: var(--accent-green);
+            font-weight: 600;
+        }
+
+        /* Sensor */
+        .sensor-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 10px;
+        }
+
+        .sensor-box {
+            background: rgba(255, 255, 255, 0.02);
+            padding: 12px;
+            border-radius: 12px;
+            border: 1px solid rgba(255, 255, 255, 0.04);
+        }
+
+        .sensor-box .name {
+            font-size: 0.72rem;
+            color: var(--text-muted);
+            margin-bottom: 4px;
+        }
+
+        .sensor-box .val {
+            font-size: 1.1rem;
+            font-weight: 700;
+        }
+
+        .sensor-box .unit {
+            font-size: 0.65rem;
+            color: var(--text-muted);
+            font-weight: 400;
+        }
+
+        /* Reward Boxes */
+        .reward-row {
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+        }
+
+        .reward-box {
+            background: linear-gradient(135deg, rgba(59, 130, 246, 0.08), rgba(16, 185, 129, 0.08));
+            border: 1px solid rgba(59, 130, 246, 0.15);
+            padding: 14px;
+            border-radius: 12px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .reward-box .lbl {
+            font-size: 0.8rem;
+            color: var(--text-muted);
+        }
+
+        .reward-box .amt {
+            font-size: 1.4rem;
+            font-weight: 800;
+        }
+
+        .reward-box .tok {
+            color: var(--primary);
+            font-size: 0.85rem;
+        }
+
+        /* AI Log */
+        .ai-status {
             background: rgba(139, 92, 246, 0.05);
             border: 1px solid var(--accent-purple);
-            border-radius: 15px;
-            padding: 15px;
-            margin-bottom: 15px;
+            border-radius: 14px;
+            padding: 14px;
+            margin-bottom: 14px;
         }
 
-        .ai-log {
+        .ai-log-stream {
             background: #000;
-            padding: 15px;
+            padding: 14px;
             border-radius: 10px;
             font-family: 'Courier New', monospace;
-            font-size: 0.75rem;
-            height: 250px;
+            font-size: 0.72rem;
+            height: 220px;
             overflow-y: auto;
-            color: #10B981;
-            line-height: 1.5;
+            color: var(--accent-green);
+            line-height: 1.6;
         }
 
-        /* [REGISTRATION] Modal */
-        #registration-overlay {
+        /* Rewards Tab */
+        .chart-placeholder {
+            width: 100%;
+            height: 160px;
+            background: linear-gradient(180deg, rgba(59, 130, 246, 0.05) 0%, transparent 100%);
+            border-radius: 12px;
+            display: flex;
+            align-items: flex-end;
+            justify-content: space-around;
+            padding: 0 10px 10px;
+            gap: 4px;
+        }
+
+        .chart-bar {
+            background: var(--primary);
+            border-radius: 4px 4px 0 0;
+            width: 100%;
+            min-width: 8px;
+            opacity: 0.7;
+            transition: .2s;
+        }
+
+        .chart-bar:hover {
+            opacity: 1;
+        }
+
+        .claim-list {
+            margin-top: 14px;
+        }
+
+        .claim-item {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 12px 0;
+            border-bottom: 1px solid var(--border);
+        }
+
+        .claim-item:last-child {
+            border: none;
+        }
+
+        .claim-item .info .title {
+            font-size: 0.85rem;
+            font-weight: 600;
+        }
+
+        .claim-item .info .date {
+            font-size: 0.7rem;
+            color: var(--text-muted);
+        }
+
+        .claim-item .status {
+            font-size: 0.75rem;
+            font-weight: 600;
+        }
+
+        /* Registration Overlay */
+        #reg-overlay {
             position: fixed;
             top: 0;
             left: 0;
@@ -239,48 +834,67 @@
             padding: 30px 20px;
             display: none;
             flex-direction: column;
-            animation: slideUp 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+            animation: slideUp .4s cubic-bezier(.4, 0, .2, 1);
+            overflow-y: auto;
         }
 
         .reg-input {
             background: var(--bg-card);
             border: 1px solid var(--border);
-            padding: 15px;
+            padding: 14px;
             border-radius: 12px;
-            color: white;
+            color: #fff;
             width: 100%;
-            margin-top: 10px;
-            font-size: 1rem;
+            margin-top: 8px;
+            font-size: 0.95rem;
         }
 
         .reg-btn {
             background: var(--primary);
-            color: white;
-            padding: 18px;
-            border-radius: 15px;
+            color: #fff;
+            padding: 16px;
+            border-radius: 14px;
             border: none;
-            font-weight: bold;
-            margin-top: 20px;
+            font-weight: 700;
+            margin-top: 16px;
             width: 100%;
-            font-size: 1rem;
+            font-size: 0.95rem;
             cursor: pointer;
         }
 
-        .qr-mock {
+        .qr-area {
             width: 100%;
-            height: 200px;
+            height: 180px;
             border: 2px dashed var(--text-muted);
-            border-radius: 15px;
+            border-radius: 14px;
             display: flex;
             flex-direction: column;
             align-items: center;
             justify-content: center;
             color: var(--text-muted);
-            margin: 20px 0;
+            margin: 16px 0;
             cursor: pointer;
+            transition: .3s;
         }
 
-        /* 하단 탭바 */
+        .qr-area:hover {
+            border-color: var(--primary);
+            color: var(--primary);
+        }
+
+        .onboard-log {
+            background: #000;
+            padding: 14px;
+            border-radius: 10px;
+            font-family: monospace;
+            font-size: 0.72rem;
+            color: var(--accent-purple);
+            line-height: 1.6;
+            margin-top: 14px;
+            display: none;
+        }
+
+        /* Bottom Nav */
         .bottom-nav {
             position: fixed;
             bottom: 0;
@@ -289,34 +903,41 @@
             border-top: 1px solid var(--border);
             display: flex;
             justify-content: space-around;
-            padding: 10px 0 25px;
-            box-shadow: 0 -10px 30px rgba(0, 0, 0, 0.5);
+            padding: 8px 0 22px;
+            box-shadow: 0 -8px 30px rgba(0, 0, 0, 0.5);
+            z-index: 200;
         }
 
-        .nav-btn {
+        .nav-item {
             display: flex;
             flex-direction: column;
             align-items: center;
-            gap: 5px;
+            gap: 4px;
             color: var(--text-muted);
-            font-size: 0.65rem;
-            transition: 0.2s;
+            font-size: 0.6rem;
+            font-weight: 500;
             flex: 1;
             cursor: pointer;
+            transition: .2s;
+            padding: 6px 0;
         }
 
-        .nav-btn.active {
+        .nav-item i {
+            font-size: 1.15rem;
+        }
+
+        .nav-item.active {
             color: var(--primary);
         }
 
-        .nav-btn i {
-            font-size: 1.3rem;
+        .nav-item.active i {
+            text-shadow: 0 0 10px var(--primary-glow);
         }
 
         @keyframes fadeIn {
             from {
                 opacity: 0;
-                transform: translateY(10px);
+                transform: translateY(8px);
             }
 
             to {
@@ -338,17 +959,51 @@
         @keyframes pulse {
             0% {
                 transform: scale(1);
-                opacity: 1;
+                opacity: .8;
             }
 
             50% {
-                transform: scale(1.8);
-                opacity: 0.4;
+                transform: scale(1.6);
+                opacity: .3;
             }
 
             100% {
                 transform: scale(1);
-                opacity: 1;
+                opacity: .8;
+            }
+        }
+
+        @keyframes float {
+
+            0%,
+            100% {
+                transform: translateY(0);
+            }
+
+            50% {
+                transform: translateY(-8px);
+            }
+        }
+
+        @media(max-width:640px) {
+            .nav-links a:not(.btn) {
+                display: none;
+            }
+
+            .hero-stats {
+                gap: 20px;
+            }
+
+            .hero-stat .num {
+                font-size: 1.4rem;
+            }
+
+            .map-stats-row {
+                grid-template-columns: 1fr 1fr;
+            }
+
+            .pricing-grid {
+                grid-template-columns: 1fr;
             }
         }
     </style>
@@ -356,260 +1011,541 @@
 
 <body>
 
-    <header class="header">
-        <div class="brand"><i class="fa-solid fa-wind"></i> AIRVENT</div>
-        <div style="display:flex; align-items:center; gap:12px;">
-            <div id="wallet-pill"
-                style="background: rgba(139, 92, 246, 0.1); border: 1px solid var(--accent-purple); color: var(--accent-purple); padding: 4px 10px; border-radius: 15px; font-size: 0.7rem; font-weight: 600;">
-                8xT...4pZ</div>
-            <button class="add-node-btn" onclick="openRegistration()">+</button>
-        </div>
-    </header>
+    <!-- ==================== LANDING PAGE ==================== -->
+    <div id="landing">
 
-    <div class="content">
-        <!-- Home Tab -->
-        <div id="home" class="tab-content active">
-            <div id="node-active-view">
-                <div class="card">
-                    <div class="card-label"><span>Indoor Air Quality</span> <span id="node-status"
-                            style="color:var(--accent-green)">● Online</span></div>
-                    <div class="score-display">
-                        <div class="score-circle">
-                            <span class="score-num">92</span>
-                            <span class="score-txt">Excellent</span>
-                        </div>
-                    </div>
-                    <div class="sensor-grid">
-                        <div class="sensor-item">
-                            <div class="card-label">PM 2.5</div>
-                            <div class="sensor-val">12 <span class="unit">µg/m³</span></div>
-                        </div>
-                        <div class="sensor-item">
-                            <div class="card-label">CO2</div>
-                            <div class="sensor-val">485 <span class="unit">ppm</span></div>
-                        </div>
-                        <div class="sensor-item">
-                            <div class="card-label">TVOC</div>
-                            <div class="sensor-val">0.15 <span class="unit">mg/m³</span></div>
-                        </div>
-                        <div class="sensor-item">
-                            <div class="card-label">Temp/Humid</div>
-                            <div class="sensor-val">24<span class="unit">°C</span> 45<span class="unit">%</span></div>
-                        </div>
-                    </div>
+        <nav class="landing-nav">
+            <div class="nav-brand"><i class="fa-solid fa-wind"></i> AIRVENT</div>
+            <div class="nav-links">
+                <a href="#how">How it Works</a>
+                <a href="#map-section">Network</a>
+                <a href="#news-section">News</a>
+                <a href="#pricing-section">Pricing</a>
+                <button class="btn btn-primary btn-sm" onclick="enterDashboard()">Launch App</button>
+            </div>
+        </nav>
+
+        <!-- HERO -->
+        <section class="hero">
+            <div class="hero-badge"><i class="fa-solid fa-bolt"></i> Powered by Solana & Gemini AI</div>
+            <h1>Breathe Better.<br>Earn <span class="grad">$VENT</span>.</h1>
+            <p>전 세계 공기질 데이터를 탈중앙 네트워크로 수집하고, AI가 검증한 신뢰 데이터를 솔라나 온체인에 기록합니다. 노드 운영자에게 $VENT 토큰을 보상합니다.</p>
+            <div class="hero-btns">
+                <button class="btn btn-primary" onclick="enterDashboard()"><i class="fa-solid fa-rocket"></i>&nbsp;
+                    Launch App</button>
+                <button class="btn btn-outline"><i class="fa-solid fa-cube"></i>&nbsp; Buy Node</button>
+            </div>
+            <div class="hero-stats">
+                <div class="hero-stat">
+                    <div class="num">5,284</div>
+                    <div class="lbl">Active Nodes</div>
                 </div>
-
-                <div class="card" style="background: linear-gradient(135deg, #1E293B 0%, #0F172A 100%);">
-                    <div class="card-label">Mining Rewards</div>
-                    <div class="mining-stats">
-                        <div class="reward-box">
-                            <div>
-                                <div style="font-size: 0.8rem; color: var(--text-muted);">Today (24h)</div>
-                                <div style="font-size: 1.8rem; font-weight: 800; color: var(--primary);">14.50 <span
-                                        style="font-size: 0.9rem;">$VENT</span></div>
-                            </div>
-                            <div style="text-align: right;">
-                                <div style="font-size: 0.75rem; color: var(--accent-green);"><i
-                                        class="fa-solid fa-bolt"></i> Boost x1.2</div>
-                                <div style="font-size: 0.7rem; color: var(--text-muted);">≈ $1.20</div>
-                            </div>
-                        </div>
-                    </div>
+                <div class="hero-stat">
+                    <div class="num">142</div>
+                    <div class="lbl">Cities</div>
+                </div>
+                <div class="hero-stat">
+                    <div class="num">12.4M</div>
+                    <div class="lbl">Data Txs</div>
+                </div>
+                <div class="hero-stat">
+                    <div class="num">$0.05</div>
+                    <div class="lbl">$VENT Price</div>
                 </div>
             </div>
-        </div>
+        </section>
 
-        <!-- Network Tab -->
-        <div id="map" class="tab-content">
-            <div class="card">
-                <div class="card-label">Global DePIN Network</div>
-                <div class="map-container" id="map-area">
-                    <div style="position:absolute; color:rgba(255,255,255,0.05); font-weight:900; font-size:2rem;">
+        <!-- HOW IT WORKS -->
+        <section class="section" id="how">
+            <div class="section-title">How It Works</div>
+            <div class="section-sub">3 단계로 DePIN 생태계에 참여하세요</div>
+            <div class="steps-grid">
+                <div class="step-card">
+                    <div class="step-num">1</div>
+                    <h3><i class="fa-solid fa-cube"></i> Buy Node</h3>
+                    <p>에어벤트 센서 노드를 구매하고 실내 또는 실외에 설치하세요. PM2.5, CO2, VOC, 온습도를 24/7 측정합니다.</p>
+                </div>
+                <div class="step-card">
+                    <div class="step-num">2</div>
+                    <h3><i class="fa-solid fa-link"></i> Connect & Validate</h3>
+                    <p>QR 코드로 노드를 등록하면 Gemini AI가 데이터 무결성을 실시간 검증하고 Solana에 기록합니다.</p>
+                </div>
+                <div class="step-card">
+                    <div class="step-num">3</div>
+                    <h3><i class="fa-solid fa-coins"></i> Earn $VENT</h3>
+                    <p>검증된 데이터 기여량에 따라 $VENT 토큰을 자동 적립합니다. 희소 지역 노드는 부스트 보상을 받습니다.</p>
+                </div>
+            </div>
+        </section>
+
+        <!-- LIVE MAP -->
+        <section class="section" id="map-section">
+            <div class="section-title">Global DePIN Network</div>
+            <div class="section-sub">전 세계 에어벤트 노드의 실시간 분포</div>
+            <div class="map-section-container">
+                <div class="live-map" id="landing-map">
+                    <div style="position:absolute;color:rgba(255,255,255,0.04);font-weight:900;font-size:2.5rem;">
                         EXPLORER</div>
                 </div>
-                <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-top: 15px;">
-                    <div class="sensor-item" style="text-align: center;">
-                        <div class="card-label" style="justify-content: center;">Active Nodes</div>
-                        <div style="font-size: 1.2rem; font-weight: bold;">5,284</div>
+                <div class="map-stats-row">
+                    <div class="map-stat">
+                        <div class="val" style="color:var(--accent-green);">5,284</div>
+                        <div class="lbl">Active Nodes</div>
                     </div>
-                    <div class="sensor-item" style="text-align: center;">
-                        <div class="card-label" style="justify-content: center;">Data Txs</div>
-                        <div style="font-size: 1.2rem; font-weight: bold;">12.4M</div>
+                    <div class="map-stat">
+                        <div class="val" style="color:var(--primary);">12.4M</div>
+                        <div class="lbl">Data Txs</div>
+                    </div>
+                    <div class="map-stat">
+                        <div class="val" style="color:var(--accent-gold);">75K</div>
+                        <div class="lbl">24h Rewards</div>
+                    </div>
+                    <div class="map-stat">
+                        <div class="val" style="color:var(--accent-purple);">142</div>
+                        <div class="lbl">Cities</div>
                     </div>
                 </div>
             </div>
-        </div>
+        </section>
 
-        <!-- AI Audit Tab -->
-        <div id="ai" class="tab-content">
-            <div class="ai-status-box">
-                <div class="card-label" style="color: var(--accent-purple); font-weight: bold;">
-                    <span><i class="fa-solid fa-robot"></i> Gemini AI Validator</span>
-                    <span id="ai-status-indicator">Monitoring...</span>
+        <!-- NEWS -->
+        <section class="section" id="news-section">
+            <div class="section-title">Air Quality News</div>
+            <div class="section-sub">전 세계 대기질 관련 최신 소식</div>
+            <div class="news-grid">
+                <div class="news-card">
+                    <span class="news-tag tag-alert"><i class="fa-solid fa-triangle-exclamation"></i> Alert</span>
+                    <h3>서울 PM2.5, 이번 주 '나쁨' 지속 전망</h3>
+                    <p>기상청은 중국발 미세먼지와 대기 정체로 수도권 PM2.5가 75µg/m³ 이상 유지될 것으로 예보했습니다.</p>
+                    <div class="news-meta"><span>KBS News</span><span>2026.02.21</span></div>
                 </div>
-                <p style="font-size: 0.8rem; color: var(--text-muted);">제미나이 AI가 이 노드의 데이터를 실시간으로 분석하여 무결성을 검증하고 있습니다.
-                </p>
+                <div class="news-card">
+                    <span class="news-tag tag-insight"><i class="fa-solid fa-chart-line"></i> Insight</span>
+                    <h3>WHO, 실내 공기질 가이드라인 2026 업데이트 발표</h3>
+                    <p>세계보건기구가 실내 CO2 농도 기준을 1,000ppm에서 800ppm으로 강화하는 권고안을 발표했습니다.</p>
+                    <div class="news-meta"><span>WHO Report</span><span>2026.02.18</span></div>
+                </div>
+                <div class="news-card">
+                    <span class="news-tag tag-update"><i class="fa-solid fa-arrow-trend-up"></i> DePIN</span>
+                    <h3>에어벤트, Solana Foundation Grant 수령 확정</h3>
+                    <p>AirVent 프로젝트가 솔라나 재단의 DePIN 인프라 그랜트 프로그램에 선정되어 개발 가속화에 박차를 가합니다.</p>
+                    <div class="news-meta"><span>AirVent Blog</span><span>2026.02.15</span></div>
+                </div>
             </div>
+        </section>
 
-            <div class="card">
-                <div class="card-label">Live Oracle Log</div>
-                <div class="ai-log" id="ai-log-stream">
-                    > Initializing Gemini AI Oracle...<br>
-                    > Node #AV-8924 Authenticated.<br>
+        <!-- PRICING -->
+        <section class="section" id="pricing-section">
+            <div class="section-title">Plans & Pricing</div>
+            <div class="section-sub">필요에 맞는 플랜을 선택하세요</div>
+            <div class="pricing-grid">
+                <div class="price-card">
+                    <div class="tier">Free</div>
+                    <div class="price">$0 <span class="mo">/mo</span></div>
+                    <div class="desc">기본 공기질 지표와 뉴스 열람</div>
+                    <ul class="price-features">
+                        <li><i class="fa-solid fa-check"></i> 실시간 AQI 지도</li>
+                        <li><i class="fa-solid fa-check"></i> 뉴스 피드 (최근 7일)</li>
+                        <li><i class="fa-solid fa-check"></i> 1개 도시 알림</li>
+                    </ul>
+                    <button class="btn btn-outline" style="width:100%;">Get Started</button>
+                </div>
+                <div class="price-card featured">
+                    <div class="tier">Pro</div>
+                    <div class="price">$9.99 <span class="mo">/mo</span></div>
+                    <div class="desc">고급 분석, API 키, 히스토리 접근</div>
+                    <ul class="price-features">
+                        <li><i class="fa-solid fa-check"></i> 무제한 히스토리 데이터</li>
+                        <li><i class="fa-solid fa-check"></i> API 키 (10K calls/mo)</li>
+                        <li><i class="fa-solid fa-check"></i> 무제한 도시 알림</li>
+                        <li><i class="fa-solid fa-check"></i> AI 리포트 (주간)</li>
+                        <li><i class="fa-solid fa-check"></i> 우선 고객지원</li>
+                    </ul>
+                    <button class="btn btn-primary" style="width:100%;">Subscribe</button>
+                </div>
+                <div class="price-card">
+                    <div class="tier">Enterprise</div>
+                    <div class="price">Custom</div>
+                    <div class="desc">대규모 API, SLA, 전용 데이터 피드</div>
+                    <ul class="price-features">
+                        <li><i class="fa-solid fa-check"></i> 무제한 API 호출</li>
+                        <li><i class="fa-solid fa-check"></i> 99.9% SLA 보장</li>
+                        <li><i class="fa-solid fa-check"></i> 전용 데이터 파이프라인</li>
+                        <li><i class="fa-solid fa-check"></i> 커스텀 AI 모델</li>
+                        <li><i class="fa-solid fa-check"></i> 전담 어카운트 매니저</li>
+                    </ul>
+                    <button class="btn btn-outline" style="width:100%;">Contact Sales</button>
                 </div>
             </div>
+        </section>
 
-            <div class="card" style="border-color: var(--accent-gold); background: rgba(245, 158, 11, 0.05);">
-                <div class="card-label" style="color: var(--accent-gold); font-weight: bold;">Security Summary</div>
-                <div style="font-size: 0.85rem; line-height: 1.4;">
-                    제미나이 AI 모델이 현재 데이터의 시간적 패턴과 주변 노드와의 상관관계를 분석한 결과, **정상(Confidence 99.8%)**으로 판정되었습니다.
-                </div>
+        <!-- FOOTER -->
+        <footer class="footer">
+            <div class="footer-links">
+                <a href="#">Docs</a>
+                <a href="#">GitHub</a>
+                <a href="#">Blog</a>
+                <a href="#">Privacy Policy</a>
+                <a href="#">Terms of Service</a>
             </div>
-        </div>
+            <p>© 2026 AirVent DePIN. Built on Solana. AI by Gemini.</p>
+        </footer>
     </div>
 
-    <!-- Registration Overlay -->
-    <div id="registration-overlay">
-        <div style="display:flex; justify-content: space-between; align-items: center; margin-bottom: 20px;">
-            <h2>Register Node</h2>
-            <i class="fa-solid fa-xmark" onclick="closeRegistration()"
-                style="font-size: 1.5rem; color: var(--text-muted); cursor: pointer;"></i>
-        </div>
+    <!-- ==================== DASHBOARD APP ==================== -->
+    <div id="dashboard-app">
 
-        <p style="color:var(--text-muted); font-size: 0.9rem;">에어벤트 기기 하단의 QR코드를 스캔하여 DePIN 네트워크에 등록하세요.</p>
+        <header class="dash-header">
+            <div class="brand" onclick="exitDashboard()" style="cursor:pointer;"><i class="fa-solid fa-wind"></i>
+                AIRVENT</div>
+            <div class="dash-header-right">
+                <div class="wallet-chip"><i class="fa-solid fa-wallet"></i> 8xT...4pZ</div>
+                <button class="add-btn" onclick="openReg()">+</button>
+            </div>
+        </header>
 
-        <div class="qr-mock" onclick="simulateScan()">
-            <i class="fa-solid fa-qrcode" style="font-size: 3.5rem; margin-bottom: 10px; color: var(--primary);"></i>
-            <span>Tap to Scan QR Code</span>
-        </div>
+        <div class="dash-content">
 
-        <div style="margin-top: 10px;">
-            <label style="font-size: 0.8rem; color: var(--text-muted);">Device ID</label>
-            <input type="text" id="device-id-field" class="reg-input" placeholder="AV-XXXX-XXXX">
-        </div>
+            <!-- HOME -->
+            <div id="d-home" class="dash-tab active">
+                <div class="d-card">
+                    <div class="d-card-header"><span class="d-card-title">Indoor Air Quality</span><span
+                            class="d-badge badge-green">● Online</span></div>
+                    <div style="text-align:center;padding:8px 0;">
+                        <div class="score-ring"><span class="big">92</span><span class="sm">Excellent</span></div>
+                    </div>
+                    <div class="sensor-grid">
+                        <div class="sensor-box">
+                            <div class="name">PM 2.5</div>
+                            <div class="val">12 <span class="unit">µg/m³</span></div>
+                        </div>
+                        <div class="sensor-box">
+                            <div class="name">CO2</div>
+                            <div class="val">485 <span class="unit">ppm</span></div>
+                        </div>
+                        <div class="sensor-box">
+                            <div class="name">TVOC</div>
+                            <div class="val">0.15 <span class="unit">mg/m³</span></div>
+                        </div>
+                        <div class="sensor-box">
+                            <div class="name">Temp / Humid</div>
+                            <div class="val">24<span class="unit">°C</span> 45<span class="unit">%</span></div>
+                        </div>
+                    </div>
+                </div>
+                <div class="d-card" style="background:linear-gradient(135deg,#1E293B,#0F172A);">
+                    <div class="d-card-header"><span class="d-card-title">Mining Rewards</span><span
+                            class="d-badge badge-green"><i class="fa-solid fa-bolt"></i> Boost x1.2</span></div>
+                    <div class="reward-row">
+                        <div class="reward-box">
+                            <div>
+                                <div class="lbl">Today (24h)</div>
+                                <div style="font-size:.65rem;color:var(--accent-green);margin-top:2px;"><i
+                                        class="fa-solid fa-arrow-trend-up"></i> Active</div>
+                            </div>
+                            <div class="amt">14.50 <span class="tok">$VENT</span></div>
+                        </div>
+                        <div class="reward-box">
+                            <div>
+                                <div class="lbl">Total Earned</div>
+                                <div style="font-size:.65rem;color:var(--text-muted);margin-top:2px;">≈ $62.00 USD</div>
+                            </div>
+                            <div class="amt">1,240 <span class="tok">$VENT</span></div>
+                        </div>
+                    </div>
+                </div>
+            </div>
 
-        <button class="reg-btn" id="reg-action-btn" onclick="startIntegratedOnboarding()">Connect to Solana</button>
+            <!-- NETWORK -->
+            <div id="d-network" class="dash-tab">
+                <div class="d-card">
+                    <div class="d-card-header"><span class="d-card-title">Global DePIN Network</span></div>
+                    <div class="live-map" id="dash-map" style="height:220px;">
+                        <div style="position:absolute;color:rgba(255,255,255,0.04);font-weight:900;font-size:1.5rem;">
+                            EXPLORER</div>
+                    </div>
+                    <div class="map-stats-row" style="margin-top:12px;">
+                        <div class="map-stat">
+                            <div class="val" style="color:var(--accent-green);">5,284</div>
+                            <div class="lbl">Nodes</div>
+                        </div>
+                        <div class="map-stat">
+                            <div class="val" style="color:var(--primary);">12.4M</div>
+                            <div class="lbl">Txs</div>
+                        </div>
+                        <div class="map-stat">
+                            <div class="val" style="color:var(--accent-gold);">75K</div>
+                            <div class="lbl">24h $VENT</div>
+                        </div>
+                        <div class="map-stat">
+                            <div class="val" style="color:var(--accent-purple);">142</div>
+                            <div class="lbl">Cities</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
 
-        <div id="onboarding-log-box"
-            style="margin-top:20px; display:none; background: #000; padding:15px; border-radius:10px; border:1px solid var(--accent-purple);">
-            <div id="onboarding-stepper"
-                style="font-family: monospace; font-size: 0.75rem; color: var(--accent-purple); line-height: 1.6;">
+            <!-- AI AUDIT -->
+            <div id="d-ai" class="dash-tab">
+                <div class="ai-status">
+                    <div class="d-card-header" style="margin-bottom:8px;">
+                        <span style="color:var(--accent-purple);font-weight:700;font-size:.85rem;"><i
+                                class="fa-solid fa-robot"></i> Gemini AI Validator</span>
+                        <span id="ai-indicator" class="d-badge badge-purple">Monitoring...</span>
+                    </div>
+                    <p style="font-size:.78rem;color:var(--text-muted);line-height:1.4;">제미나이 AI 오라클이 노드 데이터를 실시간 분석하여
+                        어뷰징·위변조를 탐지하고, 검증 결과를 솔라나 체인에 기록합니다.</p>
+                </div>
+                <div class="d-card">
+                    <div class="d-card-header"><span class="d-card-title">Live Oracle Log</span></div>
+                    <div class="ai-log-stream" id="ai-log">> Initializing Gemini AI Oracle...<br>> Node #AV-8924
+                        Authenticated.<br></div>
+                </div>
+                <div class="d-card" style="border-color:var(--accent-gold);background:rgba(245,158,11,0.03);">
+                    <div class="d-card-header"><span class="d-card-title" style="color:var(--accent-gold);">Security
+                            Summary</span><span class="d-badge badge-gold">99.8%</span></div>
+                    <div style="font-size:.82rem;line-height:1.5;">제미나이 AI 모델이 시간적 패턴·공간 상관분석·시빌 탐지를 수행한 결과, <strong
+                            style="color:var(--accent-green);">정상(Confidence 99.8%)</strong>으로 판정되었습니다. 해시값이 솔라나 메인넷에
+                        앵커링되었습니다.</div>
+                </div>
+            </div>
+
+            <!-- REWARDS -->
+            <div id="d-rewards" class="dash-tab">
+                <div class="d-card">
+                    <div class="d-card-header"><span class="d-card-title">Earnings (7 Days)</span></div>
+                    <div class="chart-placeholder" id="earnings-chart"></div>
+                </div>
+                <div class="d-card">
+                    <div class="d-card-header"><span class="d-card-title">Claim History</span></div>
+                    <div class="claim-list">
+                        <div class="claim-item">
+                            <div class="info">
+                                <div class="title">+14.50 $VENT</div>
+                                <div class="date">2026-02-21 · Daily Mining</div>
+                            </div>
+                            <div class="status" style="color:var(--accent-green);">Approved</div>
+                        </div>
+                        <div class="claim-item">
+                            <div class="info">
+                                <div class="title">+12.80 $VENT</div>
+                                <div class="date">2026-02-20 · Daily Mining</div>
+                            </div>
+                            <div class="status" style="color:var(--accent-green);">Paid</div>
+                        </div>
+                        <div class="claim-item">
+                            <div class="info">
+                                <div class="title">+15.20 $VENT</div>
+                                <div class="date">2026-02-19 · Daily Mining</div>
+                            </div>
+                            <div class="status" style="color:var(--accent-green);">Paid</div>
+                        </div>
+                        <div class="claim-item">
+                            <div class="info">
+                                <div class="title">+8.10 $VENT</div>
+                                <div class="date">2026-02-18 · Coverage Boost</div>
+                            </div>
+                            <div class="status" style="color:var(--accent-gold);">On-chain</div>
+                        </div>
+                        <div class="claim-item">
+                            <div class="info">
+                                <div class="title">+13.60 $VENT</div>
+                                <div class="date">2026-02-17 · Daily Mining</div>
+                            </div>
+                            <div class="status" style="color:var(--accent-green);">Paid</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- WALLET -->
+            <div id="d-wallet" class="dash-tab">
+                <div class="d-card"
+                    style="background:linear-gradient(135deg,rgba(139,92,246,0.08),rgba(59,130,246,0.08));border-color:var(--accent-purple);">
+                    <div class="d-card-header"><span class="d-card-title">$VENT Balance</span><span
+                            class="d-badge badge-purple">SPL Token</span></div>
+                    <div style="font-size:2.5rem;font-weight:800;text-align:center;padding:16px 0;">1,240.50</div>
+                    <div style="text-align:center;font-size:.8rem;color:var(--text-muted);">≈ $62.03 USD</div>
+                    <div style="display:flex;gap:10px;margin-top:16px;">
+                        <button class="btn btn-primary" style="flex:1;"><i class="fa-solid fa-paper-plane"></i>
+                            Send</button>
+                        <button class="btn btn-outline" style="flex:1;"><i
+                                class="fa-solid fa-arrow-right-arrow-left"></i> Swap</button>
+                    </div>
+                </div>
+                <div class="d-card">
+                    <div class="d-card-header"><span class="d-card-title">Recent Transactions</span></div>
+                    <div class="claim-list">
+                        <div class="claim-item">
+                            <div class="info">
+                                <div class="title" style="color:var(--accent-green);">+14.50 $VENT</div>
+                                <div class="date">Mining Reward · 2h ago</div>
+                            </div>
+                            <div class="status" style="color:var(--text-muted);">5gYm...9qZ1</div>
+                        </div>
+                        <div class="claim-item">
+                            <div class="info">
+                                <div class="title" style="color:var(--accent-green);">+12.80 $VENT</div>
+                                <div class="date">Mining Reward · 26h ago</div>
+                            </div>
+                            <div class="status" style="color:var(--text-muted);">4kPZ...xR2w</div>
+                        </div>
+                        <div class="claim-item">
+                            <div class="info">
+                                <div class="title" style="color:var(--accent-red);">-50.00 $VENT</div>
+                                <div class="date">Withdraw · 3d ago</div>
+                            </div>
+                            <div class="status" style="color:var(--text-muted);">7nBx...2mL4</div>
+                        </div>
+                    </div>
+                </div>
             </div>
         </div>
-    </div>
 
-    <nav class="bottom-nav">
-        <div class="nav-btn active" onclick="showTab('home', this)">
-            <i class="fa-solid fa-house"></i>
-            <span>Home</span>
+        <!-- Registration Overlay -->
+        <div id="reg-overlay">
+            <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:20px;">
+                <h2 style="font-size:1.2rem;">Register Node</h2>
+                <i class="fa-solid fa-xmark" onclick="closeReg()"
+                    style="font-size:1.3rem;color:var(--text-muted);cursor:pointer;"></i>
+            </div>
+            <p style="color:var(--text-muted);font-size:.85rem;line-height:1.5;">에어벤트 기기 하단의 QR코드를 스캔하여 DePIN 네트워크에
+                등록하세요. Gemini AI가 노드 보안을 검증합니다.</p>
+            <div class="qr-area" onclick="simulateQR()">
+                <i class="fa-solid fa-qrcode" style="font-size:3rem;margin-bottom:8px;"></i>
+                <span style="font-size:.85rem;">Tap to Scan QR Code</span>
+            </div>
+            <div>
+                <label style="font-size:.75rem;color:var(--text-muted);">Device Serial Number</label>
+                <input type="text" id="dev-id" class="reg-input" placeholder="AV-XXXX-XXXX">
+            </div>
+            <button class="reg-btn" id="reg-btn" onclick="startOnboard()"><i class="fa-solid fa-link"></i> Connect to
+                Solana</button>
+            <div class="onboard-log" id="ob-log"></div>
         </div>
-        <div class="nav-btn" onclick="showTab('map', this)">
-            <i class="fa-solid fa-globe"></i>
-            <span>Network</span>
-        </div>
-        <div class="nav-btn" onclick="showTab('ai', this)">
-            <i class="fa-solid fa-shield-halved"></i>
-            <span>AI Audit</span>
-        </div>
-        <div class="nav-btn">
-            <i class="fa-solid fa-wallet"></i>
-            <span>Wallet</span>
-        </div>
-    </nav>
+
+        <!-- Bottom Nav -->
+        <nav class="bottom-nav">
+            <div class="nav-item active" onclick="switchDash('d-home',this)"><i
+                    class="fa-solid fa-house"></i><span>Home</span></div>
+            <div class="nav-item" onclick="switchDash('d-network',this)"><i
+                    class="fa-solid fa-globe"></i><span>Network</span></div>
+            <div class="nav-item" onclick="switchDash('d-ai',this)"><i class="fa-solid fa-shield-halved"></i><span>AI
+                    Audit</span></div>
+            <div class="nav-item" onclick="switchDash('d-rewards',this)"><i
+                    class="fa-solid fa-coins"></i><span>Rewards</span></div>
+            <div class="nav-item" onclick="switchDash('d-wallet',this)"><i
+                    class="fa-solid fa-wallet"></i><span>Wallet</span></div>
+        </nav>
+    </div>
 
     <script>
-        function showTab(tabId, el) {
-            document.querySelectorAll('.tab-content').forEach(t => t.classList.remove('active'));
-            document.querySelectorAll('.nav-btn').forEach(b => b.classList.remove('active'));
+        /* ===== VIEW SWITCHING ===== */
+        function enterDashboard() {
+            document.getElementById('landing').style.display = 'none';
+            document.getElementById('dashboard-app').style.display = 'block';
+            document.body.style.overflow = 'hidden';
+        }
+        function exitDashboard() {
+            document.getElementById('dashboard-app').style.display = 'none';
+            document.getElementById('landing').style.display = 'block';
+            document.body.style.overflow = 'auto';
+        }
+
+        /* ===== DASHBOARD TABS ===== */
+        function switchDash(tabId, el) {
+            document.querySelectorAll('.dash-tab').forEach(t => t.classList.remove('active'));
+            document.querySelectorAll('.nav-item').forEach(n => n.classList.remove('active'));
             document.getElementById(tabId).classList.add('active');
             el.classList.add('active');
-
-            if (tabId === 'map') genMapDots();
-            if (tabId === 'ai') startAiLiveLog();
+            if (tabId === 'd-network') genDots('dash-map', 30);
+            if (tabId === 'd-ai') runAiLog();
+            if (tabId === 'd-rewards') renderChart();
         }
 
-        function openRegistration() { document.getElementById('registration-overlay').style.display = 'flex'; }
-        function closeRegistration() { document.getElementById('registration-overlay').style.display = 'none'; }
-
-        function simulateScan() {
-            document.getElementById('device-id-field').value = "AV-9912-XTR7";
-            alert("QR Code Scanned!");
+        /* ===== MAP DOTS ===== */
+        function genDots(containerId, count) {
+            const c = document.getElementById(containerId);
+            c.querySelectorAll('.map-dot').forEach(d => d.remove());
+            const colors = ['', 'green', 'gold'];
+            for (let i = 0; i < count; i++) {
+                const d = document.createElement('div');
+                d.className = 'map-dot ' + colors[Math.floor(Math.random() * 3)];
+                d.style.top = Math.random() * 80 + 10 + '%';
+                d.style.left = Math.random() * 80 + 10 + '%';
+                d.style.animationDelay = Math.random() * 2.5 + 's';
+                c.appendChild(d);
+            }
         }
 
-        function startIntegratedOnboarding() {
-            const btn = document.getElementById('reg-action-btn');
-            const logBox = document.getElementById('onboarding-log-box');
-            const stepper = document.getElementById('onboarding-stepper');
-
-            btn.disabled = true;
-            btn.innerText = "Connecting...";
-            logBox.style.display = 'block';
-            stepper.innerHTML = "";
-
-            const steps = [
-                "> Handshaking with Node...",
-                "> Validating Firmware Signature...",
-                "> Gemini AI: P-Key Verification...",
-                "> Gemini AI: Status [SECURE]",
-                "> Minting Node SFT on Solana...",
-                "> Linking to Wallet: 8xT...4pZ",
-                "> Finalizing Onboarding..."
+        /* ===== AI LOG ===== */
+        let aiRunning = false;
+        function runAiLog() {
+            if (aiRunning) return;
+            aiRunning = true;
+            const log = document.getElementById('ai-log');
+            const ind = document.getElementById('ai-indicator');
+            ind.innerText = 'Analyzing...';
+            const lines = [
+                "> Scanning PM2.5 temporal dynamics...",
+                "> Cross-referencing CO2 correlations (IsolationForest)...",
+                "> HDBSCAN: cluster analysis OK",
+                "> Pattern: NATURAL_AIRFLOW",
+                "> <span style='color:white'>[OK]</span> Data Integrity Verified.",
+                "> Computing Merkle root for window 12:30~12:40...",
+                "> root_hash: 0x7f3a...9c12",
+                "> Sending Memo to Solana Mainnet...",
+                "> Tx: <span style='color:var(--primary)'>5gYm...9qZ1</span>",
+                "> <span style='color:var(--accent-gold)'>Reward issued: 1.25 $VENT</span>"
             ];
-
             let i = 0;
-            const scrollInterval = setInterval(() => {
-                if (i < steps.length) {
-                    stepper.innerHTML += steps[i] + "<br>";
+            const iv = setInterval(() => {
+                if (i < lines.length) {
+                    log.innerHTML += lines[i] + '<br>';
+                    log.scrollTop = log.scrollHeight;
                     i++;
                 } else {
-                    clearInterval(scrollInterval);
-                    setTimeout(() => {
-                        alert("노드가 성공적으로 등록되었습니다!");
-                        closeRegistration();
-                    }, 1000);
+                    clearInterval(iv);
+                    ind.innerText = 'Monitoring...';
+                    aiRunning = false;
                 }
             }, 700);
         }
 
-        function genMapDots() {
-            const map = document.getElementById('map-area');
-            map.querySelectorAll('.node-dot').forEach(d => d.remove());
-            for (let i = 0; i < 35; i++) {
-                const d = document.createElement('div');
-                d.className = 'node-dot' + (Math.random() > 0.7 ? ' active' : '');
-                d.style.top = Math.random() * 80 + 10 + '%';
-                d.style.left = Math.random() * 80 + 10 + '%';
-                d.style.animationDelay = Math.random() * 2 + 's';
-                map.appendChild(d);
-            }
+        /* ===== EARNINGS CHART ===== */
+        function renderChart() {
+            const c = document.getElementById('earnings-chart');
+            if (c.children.length > 0) return;
+            const data = [12.3, 14.1, 10.8, 15.2, 13.6, 12.8, 14.5];
+            const max = Math.max(...data);
+            data.forEach(v => {
+                const bar = document.createElement('div');
+                bar.className = 'chart-bar';
+                bar.style.height = (v / max * 120) + 'px';
+                bar.title = v + ' $VENT';
+                c.appendChild(bar);
+            });
         }
 
-        function startAiLiveLog() {
-            const logStream = document.getElementById('ai-log-stream');
-            const indicator = document.getElementById('ai-status-indicator');
-            indicator.innerText = "Analyzing...";
-
-            const lines = [
-                "> Scanning PM2.5 temporal dynamics...",
-                "> Cross-referencing CO2 correlations...",
-                "> Pattern recognized: NATURAL_AIRFLOW",
-                "> <span style='color:white'>[OK]</span> Data Integrity Verified.",
-                "> Reporting to Solana Mainnet...",
-                "> Batch Tx: 5gYm...9qZ1"
-            ];
-
+        /* ===== REGISTRATION ===== */
+        function openReg() { document.getElementById('reg-overlay').style.display = 'flex'; }
+        function closeReg() { document.getElementById('reg-overlay').style.display = 'none'; }
+        function simulateQR() { document.getElementById('dev-id').value = 'AV-9912-XTR7'; alert('QR Code Scanned!'); }
+        function startOnboard() {
+            const btn = document.getElementById('reg-btn');
+            const logEl = document.getElementById('ob-log');
+            btn.disabled = true; btn.innerText = 'Processing...';
+            logEl.style.display = 'block'; logEl.innerHTML = '';
+            const steps = ["> Handshaking with Device...", "> Validating Firmware Signature...", "> Gemini AI: P-Key Verification...", "> Gemini AI: Status [SECURE]", "> Minting Node SFT on Solana...", "> ed25519 Signature Verified On-chain", "> Linking to Wallet: 8xT...4pZ", "> Registration Complete!"];
             let i = 0;
-            const logInterval = setInterval(() => {
-                if (i < lines.length) {
-                    logStream.innerHTML += lines[i] + "<br>";
-                    logStream.scrollTop = logStream.scrollHeight;
-                    i++;
-                } else {
-                    clearInterval(logInterval);
-                    indicator.innerText = "Monitoring...";
-                }
-            }, 900);
+            const iv = setInterval(() => {
+                if (i < steps.length) { logEl.innerHTML += steps[i] + '<br>'; i++; }
+                else { clearInterval(iv); setTimeout(() => { alert('노드가 성공적으로 등록되었습니다!'); closeReg(); btn.disabled = false; btn.innerHTML = '<i class="fa-solid fa-link"></i> Connect to Solana'; }, 800); }
+            }, 650);
         }
+
+        /* ===== LANDING MAP INIT ===== */
+        window.addEventListener('DOMContentLoaded', () => { genDots('landing-map', 40); });
     </script>
 </body>
 
